@@ -98,17 +98,17 @@ public class MainActivity extends AppCompatActivity {
                             publishProgress(
                                     String.format("Detection Finished. %d face(s) detected",
                                             result.length));
-                            //return result;
-                            //HERE
-                            com.microsoft.projectoxford.emotion.contract.FaceRectangle[] rects =
+
+                            com.microsoft.projectoxford.emotion.contract.FaceRectangle[] faceRectangles =
                                     new com.microsoft.projectoxford.emotion.contract.FaceRectangle[result.length];
                             for (int i = 0; i < result.length; i++) {
-                                com.microsoft.projectoxford.face.contract.FaceRectangle rect = result[i].faceRectangle;
-                                rects[i] = new com.microsoft.projectoxford.emotion.contract.FaceRectangle(rect.left, rect.top, rect.width, rect.height);
+                                com.microsoft.projectoxford.face.contract.FaceRectangle tempRectangles = result[i].faceRectangle;
+                                faceRectangles[i] = new com.microsoft.projectoxford.emotion.contract.FaceRectangle(tempRectangles.left,
+                                        tempRectangles.top, tempRectangles.width, tempRectangles.height);
                             }
                             List<RecognizeResult> finalFaces;
                             inputStream.reset();
-                            finalFaces = emotionServiceClient.recognizeImage(inputStream, rects);
+                            finalFaces = emotionServiceClient.recognizeImage(inputStream, faceRectangles);
                             return finalFaces;
 
                         } catch (Exception e) {
