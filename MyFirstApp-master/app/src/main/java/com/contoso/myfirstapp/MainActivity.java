@@ -20,6 +20,7 @@ import com.microsoft.projectoxford.emotion.EmotionServiceClient;
 import com.microsoft.projectoxford.emotion.EmotionServiceRestClient;
 import com.microsoft.projectoxford.emotion.contract.FaceRectangle;
 import com.microsoft.projectoxford.emotion.contract.RecognizeResult;
+import com.microsoft.projectoxford.emotion.contract.Scores;
 
 
 
@@ -127,13 +128,21 @@ public class MainActivity extends AppCompatActivity {
                         detectionProgressDialog.setMessage(progress[0]);
                     }
                     @Override
-                    protected void onPostExecute(List<RecognizeResult> result) {
+                    protected void onPostExecute(List<RecognizeResult> finalFaces) {
 
-                        detectionProgressDialog.dismiss();
-                        if (result == null) return;
+                        if (finalFaces == null) return;
                         ImageView imageView = (ImageView)findViewById(R.id.imageView1);
-                        imageView.setImageBitmap(drawFaceRectanglesOnBitmap(imageBitmap, result));
-                        imageBitmap.recycle();
+                        imageView.setImageBitmap(drawFaceRectanglesOnBitmap(imageBitmap, finalFaces));
+                        for (RecognizeResult currResult : finalFaces)
+                        {
+                            Scores faceScore = currResult.scores;
+
+                            detectionProgressDialog.setMessage("Anger: " + (faceScore.anger)
+                                    + "\nContempt: " + (faceScore.contempt) + "\nDisgust: " + (faceScore.disgust)
+                                    + "\nFear: " + (faceScore.fear) + "\nHappiness: " + (faceScore.happiness)
+                                    + "\nNeutral: " + (faceScore.neutral) + "\nSadness: " + (faceScore.sadness)
+                                    + "\nSurprise: " + (faceScore.surprise));
+                        }
                     }
                 };
         detectTask.execute(inputStream);
